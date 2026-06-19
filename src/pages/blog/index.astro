@@ -1,0 +1,114 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/ui/PostCard.astro';
+import SectionHead from '@components/ui/SectionHead.astro';
+import Tag from '@components/ui/Tag.astro';
+import { getAllPosts } from '@utils/content';
+
+const posts   = await getAllPosts();
+const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
+---
+
+<BaseLayout title="Blog" description="Catatan proses, keputusan teknis, dan eksperimen.">
+  <div class="page-shell">
+    <header class="page-header animate-fade-up">
+      <SectionHead number="04" label="BLOG" />
+      <p class="page-desc">
+        Tulisan tentang hal-hal yang sedang dikerjakan, dipelajari, atau dipertanyakan.
+        Tidak selalu punya kesimpulan.
+      </p>
+    </header>
+
+    <!-- Tag filter -->
+    <div class="tag-filter animate-fade-up delay-1" role="group" aria-label="Filter berdasarkan tag">
+      <button class="tag-btn active" data-tag="all">Semua</button>
+      {allTags.map(t => (
+        <button class="tag-btn" data-tag={t}>{t}</button>
+      ))}
+    </div>
+
+    <!-- Posts grid -->
+    <div class="posts-list" id="postList">
+      {posts.map((post, i) => (
+        <div class="post-row" data-tags={post.data.tags.join(',')}>
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            slug={post.slug}
+            publishDate={post.data.publishDate}
+            tags={post.data.tags}
+            index={i}
+          />
+        </div>
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <div class="empty-state">
+        <p class="font-mono text-muted">// belum ada post. segera.</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.page-shell { padding: 56px 44px 80px; }
+.page-header { margin-bottom: 24px; }
+.page-desc {
+  font-size: var(--text-base); color: var(--text-muted);
+  max-width: 560px; line-height: 1.7; margin: -8px 0 0;
+}
+
+/* Tag filter */
+.tag-filter {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.tag-btn {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: .08em; padding: 4px 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(176,200,232,.18);
+  border-radius: 2px; color: var(--text-muted);
+  transition: all var(--dur-fast); cursor: pointer;
+}
+.tag-btn:hover, .tag-btn.active {
+  background: rgba(81,238,252,.1);
+  border-color: rgba(81,238,252,.4);
+  color: var(--color-cyan);
+}
+
+/* Posts */
+.posts-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.post-row.hidden { display: none; }
+
+.empty-state { padding: 60px 0; text-align: center; }
+
+@media (max-width: 600px) {
+  .page-shell { padding: 36px 20px 60px; }
+  .posts-list { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+// Tag filter
+const btns     = document.querySelectorAll<HTMLElement>('.tag-btn');
+const postRows = document.querySelectorAll<HTMLElement>('.post-row');
+
+btns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tag = btn.dataset.tag;
+    postRows.forEach(row => {
+      const tags = row.dataset.tags?.split(',') ?? [];
+      const show = tag === 'all' || tags.includes(tag!);
+      row.classList.toggle('hidden', !show);
+    });
+  });
+});
+</script>

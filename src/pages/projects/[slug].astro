@@ -1,0 +1,117 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Tag from '@components/ui/Tag.astro';
+import { getAllProjects, formatDate } from '@utils/content';
+
+export async function getStaticPaths() {
+  const projects = await getAllProjects();
+  return projects.map(proj => ({
+    params: { slug: proj.slug },
+    props:  { proj },
+  }));
+}
+
+const { proj } = Astro.props;
+const { Content } = await proj.render();
+---
+
+<BaseLayout title={proj.data.title} description={proj.data.description}>
+  <article class="proj-article">
+    <a href="/projects" class="back-link animate-fade-up">← Kembali ke Projects</a>
+
+    <header class="proj-header animate-fade-up delay-1">
+      <div class="header-stripe" aria-hidden="true"></div>
+      <div class="proj-meta">
+        <span class={`proj-status status-${proj.data.status}`}>
+          { {active:'● ACTIVE', wip:'◐ WIP', archived:'○ ARCHIVED'}[proj.data.status] }
+        </span>
+        <span class="meta-sep">/</span>
+        <time datetime={proj.data.startDate.toISOString()}>
+          {formatDate(proj.data.startDate)}
+        </time>
+        {proj.data.endDate && (
+          <> <span>→</span> <time datetime={proj.data.endDate.toISOString()}>{formatDate(proj.data.endDate)}</time> </>
+        )}
+      </div>
+
+      <h1 class="proj-title">{proj.data.title}</h1>
+      <p class="proj-desc">{proj.data.description}</p>
+
+      <div class="proj-stack">
+        {proj.data.stack.map(s => <Tag label={s} />)}
+      </div>
+
+      <div class="proj-links">
+        {proj.data.liveUrl && (
+          <a href={proj.data.liveUrl} target="_blank" rel="noopener" class="proj-link-btn">
+            ↗ Live Site
+          </a>
+        )}
+        {proj.data.repoUrl && (
+          <a href={proj.data.repoUrl} target="_blank" rel="noopener" class="proj-link-btn ghost">
+            ⌥ Source Code
+          </a>
+        )}
+      </div>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+.proj-article { max-width: 780px; margin: 0 auto; padding: 48px 40px 80px; }
+.back-link {
+  font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--text-muted); text-decoration: none; display: block; margin-bottom: 36px;
+  transition: color var(--dur-fast);
+}
+.back-link:hover { color: var(--color-cyan); }
+
+.proj-header  { margin-bottom: 48px; }
+.header-stripe {
+  width: 48px; height: 3px; background: var(--color-cyan);
+  margin-bottom: 24px; box-shadow: 0 0 10px rgba(81,238,252,.6);
+}
+.proj-meta {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); margin-bottom: 16px; flex-wrap: wrap;
+}
+.proj-status  { }
+.status-active   { color: #4ade80; }
+.status-wip      { color: var(--color-cyan); }
+.status-archived { color: var(--text-muted); }
+.meta-sep { color: rgba(176,200,232,.4); }
+
+.proj-title {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.1; color: var(--color-white); margin: 0 0 12px;
+}
+.proj-desc {
+  font-size: var(--text-lg); color: var(--text-muted); line-height: 1.6; margin: 0 0 20px;
+}
+.proj-stack { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.proj-links { display: flex; gap: 12px; }
+
+.proj-link-btn {
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  padding: 10px 20px; border-radius: var(--radius-sm);
+  background: var(--color-cyan); color: var(--color-ink);
+  text-decoration: none;
+  transition: transform var(--dur-fast), background var(--dur-fast);
+}
+.proj-link-btn:hover { transform: translateY(-2px); }
+.proj-link-btn.ghost {
+  background: transparent; color: var(--color-white);
+  border: 1px solid rgba(255,255,255,.25);
+}
+.proj-link-btn.ghost:hover { border-color: var(--color-cyan); color: var(--color-cyan); }
+
+@media (max-width: 600px) {
+  .proj-article { padding: 32px 20px 60px; }
+}
+</style>

@@ -1,0 +1,376 @@
+---
+import { SITE } from '@config/site';
+const { pathname } = Astro.url;
+---
+
+<nav class="sidenav" id="sidenav" aria-label="Main navigation">
+  <!-- Brand (visible only when expanded) -->
+  <a href="/" class="nav-brand">
+    <span class="brand-text">TER<span class="brand-accent">CES</span></span>
+    <span class="brand-dot" aria-hidden="true">.</span>
+  </a>
+
+  <!-- Collapsed-state rail icon (visible only when collapsed) -->
+  <div class="rail-mark" aria-hidden="true">T<span class="rail-dot">.</span></div>
+
+  <!-- Tab list -->
+  <div class="tab-list" id="tabList" role="list">
+    <div class="nav-indicator" id="navIndicator" aria-hidden="true"></div>
+
+    {SITE.nav.map((item) => {
+      const isActive = pathname === item.href ||
+        (item.href !== '/' && pathname.startsWith(item.href));
+      return (
+        <a
+          href={item.href}
+          class={`nav-tab ${isActive ? 'active' : ''}`}
+          data-href={item.href}
+          role="listitem"
+          aria-current={isActive ? 'page' : undefined}
+        >
+          <div class="tab-sweep" aria-hidden="true"></div>
+          <div class="tab-accent-strip" aria-hidden="true"></div>
+
+          <!-- Ghost big number — appears on hover/active, right side -->
+          <span class="tab-ghost" aria-hidden="true">{item.idx}</span>
+
+          <div class="tab-content">
+            <span class="tab-number">
+              {item.idx}
+            </span>
+            <span class="tab-label">{item.label}</span>
+
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <!-- Footer spacer -->
+  <div class="nav-footer-spacer"></div>
+</nav>
+
+<!-- Mobile hamburger -->
+<button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+  <span></span><span></span><span></span>
+</button>
+<div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+
+<style>
+/* ════════════════════════════════════════════════════════════════
+   SIDE NAV — floating rounded capsule, separated from edges
+   (per skeleton sketch: margin top/bottom/left, own rounded border)
+   ════════════════════════════════════════════════════════════════ */
+.sidenav {
+  padding: 0;
+  border-radius: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  bottom: auto; /* leave room for floating music capsule below */
+  min-height: auto;
+  height: fit-content;
+  position: fixed;
+  left: var(--shell-gap, 22px);
+  width: var(--nav-rail-width, 64px);
+  background: var(--color-navy);
+  border: 1px solid rgba(81,238,252,.1);
+  display: flex;
+  flex-direction: column;
+  z-index: var(--z-nav);
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0,0,0,.35);
+
+  opacity: 0;
+  animation: navIn .5s .1s var(--ease-out-cubic) forwards;
+
+  transition: width .38s var(--ease-out-cubic),
+              box-shadow .38s var(--ease-out-cubic);
+}
+@keyframes navIn {
+  from {
+    opacity: 0;
+    transform: translate(-20px, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+
+.sidenav:hover,
+.sidenav.pinned-open {
+  width: var(--nav-width, 220px);
+  box-shadow: 12px 12px 40px rgba(0,0,0,.45);
+}
+
+/* ── Brand ──────────────────────────────────────────── */
+#.nav-brand {
+#   font-family: var(--font-display);
+#   font-weight: 800;
+#   font-size: 16px;
+#   letter-spacing: .03em;
+#   padding: 0 0 20px 22px;
+#   display: block;
+#   line-height: 1;
+#   white-space: nowrap;
+#   opacity: 0;
+#   transform: translateX(-6px);
+#   transition: opacity .22s ease .08s, transform .22s ease .08s;
+# }
+# .sidenav:hover .nav-brand,
+# .sidenav.pinned-open .nav-brand { opacity: 1; transform: translateX(0); }
+# .brand-accent { color: var(--color-cyan); }
+# .brand-dot    { color: var(--color-red); }
+
+/* Collapsed rail mark */
+.rail-mark {
+  position: absolute;
+  top: 22px; left: 0; width: var(--nav-rail-width, 64px);
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--color-white);
+  opacity: 1;
+  transition: opacity .18s ease;
+  pointer-events: none;
+}
+.rail-dot { color: var(--color-red); }
+.sidenav:hover .rail-mark,
+.sidenav.pinned-open .rail-mark { opacity: 0; }
+
+/* ── Tab list ───────────────────────────────────────── */
+.tab-list { 
+  position: relative; 
+
+  display: flex;
+  flex-direction: column; 
+  margin-top: 6px; 
+  overflow: hidden; 
+  }
+
+.nav-indicator {
+  position: absolute;
+  left: 0; width: 3px;
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px rgba(81,238,252,.7);
+  border-radius: 0 2px 2px 0;
+  transition: top var(--dur-base) var(--ease-out-cubic),
+              height var(--dur-base) var(--ease-out-cubic);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.nav-tab {
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  height: 72px;
+  padding: 0 24px 0 28px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  transition: height var(--dur-base) var(--ease-out-cubic);
+}
+.nav-tab:hover,
+.nav-tab.active { height: 92px; background: rgba(255,255,255,.08);}
+.nav-tab:last-child {
+  border-bottom: none;
+}
+.tab-number {
+  font-size: 18px;
+}
+.nav-tab.active .tab-number {
+  color: var(--color-red);
+}
+/* White sweep, right → left */
+.tab-sweep {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 8%;
+  background: var(--color-white);
+  transition: width .35s var(--ease-out-cubic);
+  z-index: 1;
+}
+.tab-sweep::after {
+  content: ""; position: absolute;
+  top: 0; bottom: 0; left: -22px; width: 22px;
+  background: linear-gradient(270deg, var(--color-white), transparent);
+  opacity: 0; transition: opacity .35s linear;
+}
+.nav-tab:hover .tab-sweep,
+.nav-tab.active .tab-sweep { width: 100%; }
+.nav-tab:hover .tab-sweep::after,
+.nav-tab.active .tab-sweep::after { opacity: 1; }
+
+/* Red strip, left edge */
+.tab-accent-strip {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 3px;
+  background: var(--color-red);
+  box-shadow: 0 0 8px rgba(247,64,49,.8);
+  opacity: 0;
+  transition: opacity .2s linear;
+  z-index: 5;
+}
+.nav-tab:hover .tab-accent-strip,
+.nav-tab.active .tab-accent-strip { opacity: 1; }
+
+/* Ghost big number — Anton, matching reference image style */
+.tab-ghost {
+  opacity: 1;
+  transform: translateY(-50%);
+  position: absolute;
+  right: 12px; top: 50%;
+  font-family: var(--font-ghost);
+  font-weight: 400;
+  font-size: 73px;
+
+  letter-spacing: -.01em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(0,16,32,0);
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity .22s linear,
+              transform .3s var(--ease-out-cubic),
+              -webkit-text-stroke-color .2s linear,
+              color .2s linear;
+  white-space: nowrap;
+}
+.nav-tab:hover .tab-ghost,
+.nav-tab.active .tab-ghost {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+  color: var(--color-red);
+  -webkit-text-stroke: 2px var(--color-ink);
+}
+
+/* Content (small idx + label) */
+.tab-content {
+  opacity: 0;
+  position: relative; z-index: 3;
+  display: flex; align-items: center; gap: 12px;
+  white-space: nowrap;
+  transition: opacity .18s ease;
+}
+.sidenav:hover .tab-content {
+  opacity: 1;
+}
+.sidenav.pinned-open .tab-content { opacity: 1; }
+
+.tab-idx-small {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: opacity .18s linear, color .18s linear;
+  opacity: 1;
+}
+.nav-tab:hover .tab-idx-small,
+.nav-tab.active .tab-idx-small { opacity: 0; width: 0; }
+
+.tab-label {
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: color .2s linear;
+}
+.nav-tab:hover .tab-label,
+.nav-tab.active .tab-label { color: var(--color-ink); font-weight: 600; }
+
+/* ── Footer spacer ─────────────────────────────────────── */
+.nav-footer-spacer {
+  margin-top: auto;
+}
+
+/* ── Mobile ─────────────────────────────────────────── */
+.nav-toggle {
+  display: none;
+  position: fixed; top: 16px; left: 16px;
+  z-index: calc(var(--z-nav) + 10);
+  flex-direction: column; gap: 5px;
+  padding: 10px;
+  background: var(--color-navy);
+  border: 1px solid rgba(81,238,252,.2);
+  border-radius: var(--radius-sm);
+}
+.nav-toggle span {
+  display: block; width: 20px; height: 2px;
+  background: var(--color-cyan);
+  transition: transform var(--dur-fast), opacity var(--dur-fast);
+}
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,18,48,.7);
+  z-index: calc(var(--z-nav) - 1);
+  backdrop-filter: blur(4px);
+}
+
+@media (max-width: 768px) {
+  .sidenav {
+    width: calc(var(--nav-width, 220px));
+    transform: translateX(-130%);
+    animation: none; opacity: 1;
+    transition: transform var(--dur-base) var(--ease-out-cubic);
+  }
+  .sidenav.open { transform: translateX(0); }
+  .sidenav .nav-brand,
+  .sidenav .tab-content { opacity: 1; width: auto; }
+  .rail-mark { display: none; }
+  .nav-toggle  { display: flex; }
+  .nav-overlay { display: block; }
+}
+</style>
+
+<script>
+const sidenav   = document.getElementById('sidenav')!;
+const tabList   = document.getElementById('tabList')!;
+const indicator = document.getElementById('navIndicator')!;
+const tabs = document.querySelectorAll<HTMLElement>('.nav-tab');
+
+function moveIndicator(el: HTMLElement) {
+  const listTop = tabList.getBoundingClientRect().top;
+  const elTop   = el.getBoundingClientRect().top;
+  indicator.style.top    = (elTop - listTop) + 'px';
+  indicator.style.height = el.offsetHeight + 'px';
+}
+
+const activeTab = document.querySelector<HTMLElement>('.nav-tab.active');
+if (activeTab) moveIndicator(activeTab);
+
+tabs.forEach(t => {
+  t.addEventListener('mouseenter', () => moveIndicator(t));
+  t.addEventListener('mouseleave', () => {
+    const active = document.querySelector<HTMLElement>('.nav-tab.active');
+    if (active) moveIndicator(active);
+  });
+});
+
+sidenav.addEventListener('mouseenter', () => {
+  setTimeout(() => {
+    const active = document.querySelector<HTMLElement>('.nav-tab.active');
+    if (active) moveIndicator(active);
+  }, 50);
+});
+
+// ─── Mobile nav ──────────────────────────────────────────
+const navToggle  = document.getElementById('navToggle');
+const navOverlay = document.getElementById('navOverlay');
+
+function toggleNav(open: boolean) {
+  navToggle?.classList.toggle('open', open);
+  sidenav.classList.toggle('open', open);
+  navToggle?.setAttribute('aria-expanded', String(open));
+  navOverlay?.setAttribute('aria-hidden', String(!open));
+}
+navToggle?.addEventListener('click', () =>
+  toggleNav(!navToggle.classList.contains('open'))
+);
+navOverlay?.addEventListener('click', () => toggleNav(false));
+</script>

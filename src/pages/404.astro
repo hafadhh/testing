@@ -1,0 +1,38 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+---
+<BaseLayout title="404 — Not Found" noIndex>
+  <div class="notfound">
+    <div class="nf-num animate-fade-up">404</div>
+    <p class="nf-label animate-fade-up delay-1">// halaman tidak ditemukan</p>
+    <p class="nf-desc animate-fade-up delay-2">
+      Mungkin URL salah ketik, atau kontennya sudah dipindah.
+    </p>
+    <a href="/" class="nf-back animate-fade-up delay-3">← Kembali ke Home</a>
+  </div>
+</BaseLayout>
+<style>
+.notfound {
+  display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: center; min-height: 80vh;
+  padding: 0 52px;
+}
+.nf-num {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(6rem, 18vw, 14rem); line-height: .85;
+  color: var(--color-navy-2);
+  -webkit-text-stroke: 2px rgba(81,238,252,.4);
+  margin-bottom: 16px;
+}
+.nf-label {
+  font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--color-cyan); letter-spacing: .1em; margin: 0 0 12px;
+}
+.nf-desc { color: var(--text-muted); margin: 0 0 28px; }
+.nf-back {
+  font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--text-muted); text-decoration: none;
+  transition: color var(--dur-fast);
+}
+.nf-back:hover { color: var(--color-cyan); }
+</style>

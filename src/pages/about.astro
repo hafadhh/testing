@@ -1,0 +1,291 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import SectionHead from '@components/ui/SectionHead.astro';
+import Tag from '@components/ui/Tag.astro';
+---
+
+<BaseLayout title="About" description="Tentang saya — lebih dari sekadar tech stack.">
+  <div class="about-shell">
+
+    <!-- Header / intro -->
+    <header class="about-header animate-fade-up">
+      <SectionHead number="02" label="ABOUT" />
+      <div class="about-intro">
+        <div class="intro-text">
+          <h1 class="intro-name">Terces<span class="name-dot">.</span></h1>
+          <p class="intro-tagline">Developer. Pelajar yang lambat. Persona fan yang terlalu serius.</p>
+          <p class="intro-para">
+            Saya bikin website ini bukan karena saya punya sesuatu yang luar biasa untuk diceritakan,
+            tapi karena saya percaya dokumentasi itu penting — termasuk untuk diri sendiri.
+          </p>
+          <p class="intro-para">
+            Sebagian besar waktu saya dihabiskan di antara terminal, editor, dan earphone yang
+            sedang memutar OST Persona. Saya suka hal-hal yang punya kedalaman — code yang elegan,
+            musik yang emosional, cerita yang tidak buru-buru.
+          </p>
+        </div>
+
+        <!-- Status card -->
+        <div class="status-card animate-fade-up delay-2">
+          <p class="status-label">// status</p>
+          <div class="status-row">
+            <span class="status-dot active-dot" aria-hidden="true">●</span>
+            <span class="status-text">Sedang belajar hal baru, seperti biasa.</span>
+          </div>
+          <div class="status-row">
+            <span class="status-dot" aria-hidden="true">♫</span>
+            <span class="status-text">Now playing: Persona 3 Reload OST</span>
+          </div>
+          <div class="status-row">
+            <span class="status-dot" aria-hidden="true">⌛</span>
+            <span class="status-text">Timezone: WIB (UTC+7)</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hobi & Interest -->
+    <section class="about-section reveal-item">
+      <h2 class="sec-title">Hobi & Ketertarikan</h2>
+      <div class="interest-grid">
+        <div class="interest-card">
+          <span class="int-icon" aria-hidden="true">🎮</span>
+          <h3 class="int-title">Game</h3>
+          <p class="int-desc">
+            JRPG adalah genre favorit. Persona series, khususnya P3, P4, dan P5.
+            Yang saya suka bukan hanya gameplaynya, tapi cara mereka menceritakan
+            pertumbuhan karakter secara bertahap.
+          </p>
+        </div>
+        <div class="interest-card">
+          <span class="int-icon" aria-hidden="true">🎵</span>
+          <h3 class="int-title">Musik</h3>
+          <p class="int-desc">
+            Shoji Meguro, Yoko Shimomura, Nobuo Uematsu. Game soundtrack adalah
+            kategori musik yang serius dan underrated. Di luar itu: lo-fi, jazz kopi,
+            dan sesekali pop Jepang.
+          </p>
+        </div>
+        <div class="interest-card">
+          <span class="int-icon" aria-hidden="true">📖</span>
+          <h3 class="int-title">Baca & Tulis</h3>
+          <p class="int-desc">
+            Lebih sering baca dokumentasi daripada novel, tapi keduanya sama-sama
+            mengajarkan cara berpikir. Blog ini sebagian besar ada karena saya ingin
+            belajar menulis lebih baik.
+          </p>
+        </div>
+        <div class="interest-card">
+          <span class="int-icon" aria-hidden="true">🎨</span>
+          <h3 class="int-title">UI & Desain</h3>
+          <p class="int-desc">
+            Bukan desainer profesional, tapi sangat peduli dengan bagaimana sesuatu
+            terasa secara visual. Persona 3 Reload UI adalah referensi yang saya
+            pelajari berbulan-bulan.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lagu favorit -->
+    <section class="about-section reveal-item">
+      <h2 class="sec-title">Playlist Tetap</h2>
+      <p class="sec-desc">Lagu-lagu yang sering terputar saat coding atau berpikir.</p>
+      <div class="track-list">
+        {[
+          { title: 'Mass Destruction',      artist: 'Shoji Meguro',   album: 'Persona 3' },
+          { title: 'Burn My Dread',          artist: 'Shoji Meguro',   album: 'Persona 3' },
+          { title: 'Soul Phrase',            artist: 'Shoji Meguro',   album: 'Persona 3 Reload' },
+          { title: 'Full Moon Full Life',    artist: 'Shoji Meguro',   album: 'Persona 3 Reload' },
+          { title: 'Rivers in the Desert',   artist: 'Shoji Meguro',   album: 'Persona 5' },
+          { title: 'Life Will Change',       artist: 'Shoji Meguro',   album: 'Persona 5' },
+        ].map((track, i) => (
+          <div class="track-row" style={`animation-delay:${i * 60}ms`}>
+            <span class="track-num">{String(i+1).padStart(2,'0')}</span>
+            <div class="track-info">
+              <span class="track-title">{track.title}</span>
+              <span class="track-meta">{track.artist} — {track.album}</span>
+            </div>
+            <span class="track-wave" aria-hidden="true">♫</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Tech saat ini -->
+    <section class="about-section reveal-item">
+      <h2 class="sec-title">Yang Sedang Dipelajari</h2>
+      <div class="learning-stack">
+        {[
+          { name: 'Astro',       note: 'untuk proyek ini',          level: 90 },
+          { name: 'TypeScript',  note: 'masih sering baca docs',     level: 72 },
+          { name: 'Go',          note: 'backend side project',        level: 55 },
+          { name: 'PostgreSQL',  note: 'baru mulai paham indexes',   level: 65 },
+          { name: 'Linux/Bash',  note: 'server setup & automation',  level: 70 },
+          { name: 'CSS',         note: 'deep dive ke animasi',       level: 80 },
+        ].map(item => (
+          <div class="skill-row">
+            <div class="skill-meta">
+              <span class="skill-name">{item.name}</span>
+              <span class="skill-note">{item.note}</span>
+            </div>
+            <div class="skill-bar" role="meter" aria-label={`${item.name} ${item.level}%`}>
+              <div class="skill-fill" style={`--target:${item.level}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Values / cara kerja -->
+    <section class="about-section reveal-item">
+      <h2 class="sec-title">Cara Saya Bekerja</h2>
+      <div class="values-grid">
+        {[
+          { label: '// dokumentasi dulu',     text: 'Sebelum code, saya tulis dulu apa yang ingin dicapai. Bukan untuk formalitas, tapi karena menulis memaksa saya berpikir lebih jelas.' },
+          { label: '// simpel sebelum keren', text: 'Solusi yang bekerja selalu lebih baik dari solusi yang elegan tapi belum selesai. Kecantikan kode bisa datang belakangan.' },
+          { label: '// gagal itu valid',       text: 'Beberapa catatan di blog ini tentang hal yang tidak jalan. Saya tidak sembunyikan karena proses debug adalah bagian dari belajar.' },
+          { label: '// baca source code',      text: 'Kalau bingung, buka source-nya langsung. Dokumentasi kadang berbohong, source code tidak.' },
+        ].map(v => (
+          <div class="value-card">
+            <span class="value-label">{v.label}</span>
+            <p class="value-text">{v.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Contact teaser -->
+    <section class="about-section about-contact reveal-item">
+      <p class="contact-teaser">
+        Kalau mau ngobrol, ada pertanyaan soal post di blog, atau sekedar say hi —
+      </p>
+      <a href="/contact" class="contact-cta">
+        <span>Hubungi Saya</span>
+        <span aria-hidden="true">→</span>
+      </a>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+.about-shell { padding: 56px 44px 80px; max-width: 900px; }
+
+/* Header */
+.about-header  { margin-bottom: 56px; }
+.about-intro   { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: start; margin-top: 16px; }
+.intro-name {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.5rem); margin: 0 0 8px; line-height: 1;
+}
+.name-dot { color: var(--color-cyan); }
+.intro-tagline {
+  font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--color-cyan); letter-spacing: .06em; margin: 0 0 20px;
+}
+.intro-para { color: var(--text-muted); line-height: 1.75; margin: 0 0 14px; }
+
+/* Status card */
+.status-card {
+  background: var(--color-navy); border-radius: var(--radius-md);
+  padding: 18px 20px; min-width: 220px;
+  border: 1px solid rgba(81,238,252,.12);
+}
+.status-label {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); margin: 0 0 12px; letter-spacing: .1em;
+}
+.status-row   { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: var(--text-sm); }
+.status-dot   { font-size: 10px; margin-top: 3px; color: var(--text-muted); flex-shrink: 0; }
+.active-dot   { color: #4ade80; }
+.status-text  { color: var(--text-muted); line-height: 1.5; }
+
+/* Sections */
+.about-section { margin-bottom: 60px; }
+.sec-title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--text-xl); margin: 0 0 8px;
+  color: var(--color-white);
+}
+.sec-desc { color: var(--text-muted); margin: 0 0 20px; }
+
+/* Interest grid */
+.interest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px; margin-top: 20px;
+}
+.interest-card {
+  background: var(--color-navy); border-radius: var(--radius-sm);
+  padding: 20px; border: 1px solid rgba(176,200,232,.08);
+  transition: border-color var(--dur-base), transform var(--dur-base);
+}
+.interest-card:hover { border-color: rgba(81,238,252,.25); transform: translateY(-3px); }
+.int-icon  { font-size: 24px; display: block; margin-bottom: 12px; }
+.int-title { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); margin: 0 0 8px; }
+.int-desc  { font-size: var(--text-sm); color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+/* Track list */
+.track-list { display: flex; flex-direction: column; gap: 0; margin-top: 20px; }
+.track-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(176,200,232,.08);
+  opacity: 0; transform: translateX(-8px);
+}
+.reveal-item.visible .track-row {
+  opacity: 1; transform: translateX(0);
+  transition: opacity .35s ease, transform .35s var(--ease-out-cubic);
+}
+.track-num   { font-family: var(--font-mono); font-size: var(--text-xs); color: rgba(176,200,232,.4); width: 22px; flex-shrink: 0; }
+.track-info  { flex: 1; }
+.track-title { display: block; font-weight: 500; font-size: var(--text-sm); margin-bottom: 2px; }
+.track-meta  { display: block; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
+.track-wave  { color: var(--color-cyan); opacity: .5; font-size: 12px; }
+
+/* Skill bars */
+.learning-stack { display: flex; flex-direction: column; gap: 18px; margin-top: 20px; }
+.skill-row  { display: flex; flex-direction: column; gap: 6px; }
+.skill-meta { display: flex; align-items: baseline; gap: 10px; }
+.skill-name { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-white); }
+.skill-note { font-size: var(--text-xs); color: var(--text-muted); }
+.skill-bar  { height: 3px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden; }
+.skill-fill {
+  height: 100%; background: var(--color-cyan); border-radius: 2px;
+  width: 0;
+  box-shadow: 0 0 6px rgba(81,238,252,.5);
+  transition: width 1s var(--ease-out-cubic);
+}
+.reveal-item.visible .skill-fill { width: var(--target); }
+
+/* Values */
+.values-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px; margin-top: 20px;
+}
+.value-card {
+  background: var(--color-navy); padding: 20px;
+  border-radius: var(--radius-sm); border-left: 3px solid var(--color-cyan);
+}
+.value-label { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-cyan); display: block; margin-bottom: 10px; letter-spacing: .06em; }
+.value-text  { font-size: var(--text-sm); color: var(--text-muted); line-height: 1.7; margin: 0; }
+
+/* Contact teaser */
+.about-contact { display: flex; flex-direction: column; gap: 16px; }
+.contact-teaser { color: var(--text-muted); font-size: var(--text-lg); margin: 0; }
+.contact-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg);
+  color: var(--color-cyan); text-decoration: none;
+  transition: gap var(--dur-fast);
+}
+.contact-cta:hover { gap: 16px; }
+
+@media (max-width: 700px) {
+  .about-shell   { padding: 36px 20px 60px; }
+  .about-intro   { grid-template-columns: 1fr; }
+  .status-card   { min-width: unset; }
+  .interest-grid { grid-template-columns: 1fr 1fr; }
+  .values-grid   { grid-template-columns: 1fr; }
+}
+</style>

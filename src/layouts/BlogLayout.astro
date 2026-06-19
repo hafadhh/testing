@@ -1,0 +1,115 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Tag from '@components/ui/Tag.astro';
+import { formatDate, estimateReadingTime } from '@utils/content';
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  updatedDate?: Date;
+  tags: string[];
+  coverImage?: string;
+  body: string;
+}
+const { title, description, publishDate, updatedDate, tags, coverImage, body } = Astro.props;
+const readTime = estimateReadingTime(body);
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="blog-article">
+    <!-- Hero header -->
+    <header class="blog-header">
+      <div class="header-line" aria-hidden="true"></div>
+      <div class="header-content animate-fade-up">
+        <div class="blog-meta">
+          <time class="meta-date" datetime={publishDate.toISOString()}>
+            {formatDate(publishDate)}
+          </time>
+          <span class="meta-sep" aria-hidden="true">/</span>
+          <span class="meta-read">{readTime} min baca</span>
+          {updatedDate && (
+            <span class="meta-updated">
+              diperbarui {formatDate(updatedDate)}
+            </span>
+          )}
+        </div>
+
+        <h1 class="blog-title delay-1 animate-fade-up">{title}</h1>
+        <p class="blog-desc delay-2 animate-fade-up">{description}</p>
+
+        <div class="blog-tags delay-3 animate-fade-up">
+          {tags.map(t => <Tag label={t} href={`/blog?tag=${t}`} />)}
+        </div>
+      </div>
+    </header>
+
+    <!-- Cover image -->
+    {coverImage && (
+      <div class="blog-cover delay-4 animate-fade-up">
+        <img src={coverImage} alt={title} />
+      </div>
+    )}
+
+    <!-- Content -->
+    <div class="prose blog-body">
+      <slot />
+    </div>
+
+    <!-- Footer nav -->
+    <footer class="blog-footer">
+      <a href="/blog" class="back-link">← Kembali ke Blog</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+.blog-article {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 40px 80px;
+}
+.blog-header { margin-bottom: 40px; }
+.header-line {
+  width: 48px; height: 3px;
+  background: var(--color-cyan);
+  margin-bottom: 24px;
+  box-shadow: 0 0 10px rgba(81,238,252,.6);
+}
+.blog-meta {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); margin-bottom: 16px; flex-wrap: wrap;
+}
+.meta-date   { color: var(--color-cyan); }
+.meta-sep    { color: var(--text-muted); }
+.meta-updated { font-style: italic; }
+.blog-title {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.1; color: var(--color-white);
+  margin: 0 0 16px;
+}
+.blog-desc {
+  font-size: var(--text-lg); color: var(--text-muted);
+  line-height: 1.6; margin: 0 0 20px;
+}
+.blog-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.blog-cover {
+  margin-bottom: 40px; border-radius: var(--radius-md);
+  overflow: hidden; border: 1px solid rgba(81,238,252,.1);
+}
+.blog-cover img { width: 100%; height: auto; display: block; }
+.blog-body { margin-bottom: 56px; }
+.blog-footer { border-top: 1px solid rgba(176,200,232,.12); padding-top: 24px; }
+.back-link {
+  font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--text-muted); text-decoration: none;
+  transition: color var(--dur-fast);
+}
+.back-link:hover { color: var(--color-cyan); }
+
+@media (max-width: 600px) {
+  .blog-article { padding: 32px 20px 60px; }
+}
+</style>

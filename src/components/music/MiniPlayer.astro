@@ -1,0 +1,125 @@
+---
+import { SITE } from '@config/site';
+const { title, artist } = SITE.nowPlaying;
+---
+
+<button class="mini-player" id="miniPlayer" aria-label="Now playing — click to play or pause">
+  <span class="mini-icon" id="miniIcon" aria-hidden="true">
+    <svg class="play-icon" viewBox="0 0 24 24">
+      <polygon points="5,3 19,11 5,19" fill="currentColor"/>
+    </svg>
+    <svg class="pause-icon" viewBox="0 0 24 24" style="display:none">
+      <rect x="5" y="3" width="4.5" height="16" rx="1" fill="currentColor"/>
+      <rect x="14.5" y="3" width="4.5" height="16" rx="1" fill="currentColor"/>
+    </svg>
+  </span>
+
+  <span class="mini-info">
+    <span class="mini-marquee-wrap" aria-label={`${title} — ${artist}`}>
+      <span class="mini-title" id="miniTitle">{title} — {artist}</span>
+    </span>
+    <span class="mini-label">Now Playing!</span>
+  </span>
+</button>
+
+<style>
+.mini-player {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  z-index: var(--z-mini-player);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  max-width: 230px;
+  padding: 8px 14px 8px 8px;
+  background: rgba(0,24,62,.92);
+  border: 1px solid rgba(81,238,252,.18);
+  border-radius: var(--radius-pill, 40px);
+  cursor: pointer;
+  text-align: left;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+  transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
+}
+.mini-player:hover {
+  background: rgba(0,24,62,1);
+  border-color: rgba(81,238,252,.35);
+  transform: translateY(-2px);
+}
+
+/* Icon — simple solid square, matching reference */
+.mini-icon {
+  flex: 0 0 30px;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: var(--color-cyan);
+  color: var(--color-ink);
+  display: flex; align-items: center; justify-content: center;
+}
+.mini-icon svg { width: 13px; height: 13px; }
+
+/* Info */
+.mini-info {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  gap: 1px;
+}
+.mini-marquee-wrap { overflow: hidden; position: relative; width: 100%; max-width: 150px; }
+.mini-marquee-wrap::before,
+.mini-marquee-wrap::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 12px; z-index: 2; pointer-events: none;
+}
+.mini-marquee-wrap::before { left: 0;  background: linear-gradient(90deg, rgba(0,24,62,1), transparent); }
+.mini-marquee-wrap::after  { right: 0; background: linear-gradient(270deg, rgba(0,24,62,1), transparent); }
+
+.mini-title {
+  font-family: var(--font-body);
+  font-weight: 600; font-size: 11px;
+  color: var(--color-white);
+  white-space: nowrap;
+  display: inline-block;
+  animation: miniMarquee 11s linear infinite;
+}
+.mini-title.paused { animation-play-state: paused; }
+@keyframes miniMarquee {
+  0%   { transform: translateX(40%); }
+  100% { transform: translateX(-100%); }
+}
+.mini-label {
+  font-family: var(--font-mono);
+  font-size: 8.5px; letter-spacing: .1em;
+  color: var(--color-cyan); opacity: .85;
+}
+
+@media (max-width: 768px) {
+  .mini-player { bottom: 16px; left: 16px; max-width: 200px; }
+}
+</style>
+
+<script>
+const miniPlayer = document.getElementById('miniPlayer')!;
+const miniTitle  = document.getElementById('miniTitle')!;
+let playing = false;
+
+function setMiniState(state: boolean) {
+  playing = state;
+  const playIcon  = miniPlayer.querySelector('.play-icon') as HTMLElement;
+  const pauseIcon = miniPlayer.querySelector('.pause-icon') as HTMLElement;
+  playIcon.style.display  = state ? 'none'  : 'block';
+  pauseIcon.style.display = state ? 'block' : 'none';
+  miniTitle.classList.toggle('paused', !state);
+
+  document.dispatchEvent(new CustomEvent('mini-player-toggle', { detail: { playing: state } }));
+}
+
+miniPlayer.addEventListener('click', () => setMiniState(!playing));
+
+document.addEventListener('main-player-toggle', (e: Event) => {
+  const ev = e as CustomEvent;
+  if (ev.detail.playing !== playing) setMiniState(ev.detail.playing);
+});
+</script>

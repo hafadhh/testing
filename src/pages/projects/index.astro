@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+import SectionHead from '@components/ui/SectionHead.astro';
+import { getAllProjects } from '@utils/content';
+
+const projects = await getAllProjects();
+const byStatus = {
+  active:   projects.filter(p => p.data.status === 'active'),
+  wip:      projects.filter(p => p.data.status === 'wip'),
+  archived: projects.filter(p => p.data.status === 'archived'),
+};
+---
+
+<BaseLayout title="Projects" description="Proyek yang sedang dan sudah dikerjakan.">
+  <div class="page-shell">
+    <header class="page-header animate-fade-up">
+      <SectionHead number="03" label="PROJECTS" />
+      <p class="page-desc">
+        Setiap proyek adalah kumpulan keputusan. Di sini saya dokumentasikan
+        yang paling penting dari tiap-tiapnya.
+      </p>
+    </header>
+
+    {byStatus.active.length > 0 && (
+      <div class="status-group">
+        <h2 class="status-label">
+          <span class="dot dot-active" aria-hidden="true">●</span> Active
+        </h2>
+        <div class="proj-grid">
+          {byStatus.active.map((p, i) => (
+            <ProjectCard
+              title={p.data.title} description={p.data.description}
+              slug={p.slug} stack={p.data.stack} status={p.data.status}
+              liveUrl={p.data.liveUrl} repoUrl={p.data.repoUrl} index={i}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    {byStatus.wip.length > 0 && (
+      <div class="status-group">
+        <h2 class="status-label">
+          <span class="dot dot-wip" aria-hidden="true">◐</span> Work in Progress
+        </h2>
+        <div class="proj-grid">
+          {byStatus.wip.map((p, i) => (
+            <ProjectCard
+              title={p.data.title} description={p.data.description}
+              slug={p.slug} stack={p.data.stack} status={p.data.status}
+              liveUrl={p.data.liveUrl} repoUrl={p.data.repoUrl} index={i}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    {byStatus.archived.length > 0 && (
+      <div class="status-group">
+        <h2 class="status-label">
+          <span class="dot dot-archived" aria-hidden="true">○</span> Archived
+        </h2>
+        <div class="proj-grid">
+          {byStatus.archived.map((p, i) => (
+            <ProjectCard
+              title={p.data.title} description={p.data.description}
+              slug={p.slug} stack={p.data.stack} status={p.data.status}
+              liveUrl={p.data.liveUrl} repoUrl={p.data.repoUrl} index={i}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.page-shell  { padding: 56px 44px 80px; }
+.page-header { margin-bottom: 40px; }
+.page-desc   { font-size: var(--text-base); color: var(--text-muted); max-width: 560px; line-height: 1.7; margin: -8px 0 0; }
+.status-group { margin-bottom: 48px; }
+.status-label {
+  font-family: var(--font-mono); font-size: var(--text-sm);
+  letter-spacing: .1em; color: var(--text-muted);
+  margin: 0 0 20px; display: flex; align-items: center; gap: 8px;
+}
+.dot-active   { color: #4ade80; }
+.dot-wip      { color: var(--color-cyan); }
+.dot-archived { color: var(--text-muted); }
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+@media (max-width: 600px) {
+  .page-shell { padding: 36px 20px 60px; }
+  .proj-grid  { grid-template-columns: 1fr; }
+}
+</style>

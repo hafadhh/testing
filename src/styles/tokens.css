@@ -1,0 +1,78 @@
+/* ================================================================
+   DESIGN TOKENS — P3R Official Palette
+   ================================================================ */
+:root {
+  /* ── Color ─────────────────────────────────────────── */
+  --color-void:       #001736;
+  --color-navy:       #00183e;
+  --color-navy-2:     #072860;
+  --color-cyan:       #51eefc;
+  --color-cyan-deep:  #1269cc;
+  --color-red:        #f74031;
+  --color-white:      #ffffff;
+  --color-muted:      #b0c8e8;
+  --color-ink:        #001020;
+
+  /* ── Semantic ───────────────────────────────────────── */
+  --bg:           var(--color-void);
+  --bg-surface:   var(--color-navy);
+  --bg-raised:    var(--color-navy-2);
+  --text:         var(--color-white);
+  --text-muted:   var(--color-muted);
+  --accent:       var(--color-cyan);
+  --accent-glow:  rgba(81, 238, 252, 0.35);
+  --danger:       var(--color-red);
+
+  /* ── Typography ─────────────────────────────────────── */
+  --font-display: 'Unbounded', sans-serif;
+  --font-ghost:   'Anton', sans-serif;
+  --font-body:    'IBM Plex Sans', sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+
+  /* ── Scale ──────────────────────────────────────────── */
+  --text-xs:   0.625rem;   /* 10px */
+  --text-sm:   0.75rem;    /* 12px */
+  --text-base: 0.9375rem;  /* 15px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.5rem;     /* 24px */
+  --text-2xl:  2rem;       /* 32px */
+  --text-3xl:  3rem;       /* 48px */
+  --text-hero: clamp(2.5rem, 8vw, 5.5rem);
+
+  /* ── Spacing ────────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Layout ─────────────────────────────────────────── */
+  --nav-width: 270px;
+  --nav-rail-width: 92px;
+  --content-max:    1040px;
+  --shell-gap:      22px;
+  --radius-shell:   8px;
+  --radius-sm:   3px;
+  --radius-md:   6px;
+  --radius-pill: 50px;
+
+  /* ── Motion ─────────────────────────────────────────── */
+  --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-in-cubic:  cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --dur-fast:  150ms;
+  --dur-base:  280ms;
+  --dur-slow:  500ms;
+  --dur-enter: 600ms;
+
+  /* ── Z-index ─────────────────────────────────────────── */
+  --z-base:     1;
+  --z-nav:      10;
+  --z-overlay:  50;
+  --z-mini-player: 100;
+  --z-modal:    200;
+}

@@ -1,0 +1,236 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/ui/PostCard.astro';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+import SectionHead from '@components/ui/SectionHead.astro';
+import { getRecentPosts, getFeaturedProjects } from '@utils/content';
+
+const recentPosts     = await getRecentPosts(4);
+const featuredProjects = await getFeaturedProjects();
+---
+
+<BaseLayout>
+  <!-- ── Hero ─────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-cyan-panel" aria-hidden="true"></div>
+
+    <div class="hero-dark">
+      <p class="eyebrow animate-fade-up">// PERSONAL BUILD LOG</p>
+
+      <h1 class="hero-h1 animate-fade-up delay-1">
+        PERSONA<br/>
+        <span class="h1-terces">TERCES</span>
+      </h1>
+
+      <p class="hero-sub animate-fade-up delay-2">
+        Cara saya berpikir,<br/>bukan cuma membangun.
+      </p>
+
+      <p class="hero-desc animate-fade-up delay-3">
+        Catatan proses, keputusan teknis, eksperimen — termasuk yang gagal.
+      </p>
+
+      <div class="hero-cta animate-fade-up delay-4">
+        <a href="/blog" class="btn-primary">
+          <span>Baca Blog</span>
+        </a>
+        <a href="/about" class="btn-ghost">
+          <span>Tentang Saya</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Focal point placeholder (ganti dengan character art nanti) -->
+    <div class="hero-focal" aria-hidden="true">
+      <div class="focal-geo">
+        <div class="geo-ring ring-1"></div>
+        <div class="geo-ring ring-2"></div>
+        <div class="geo-diamond"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Recent Posts ──────────────────────────────────── -->
+  <section class="content-section">
+    <SectionHead number="04" label="LATEST POSTS" />
+    <div class="posts-grid">
+      {recentPosts.map((post, i) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          slug={post.slug}
+          publishDate={post.data.publishDate}
+          tags={post.data.tags}
+          index={i}
+        />
+      ))}
+    </div>
+    <a href="/blog" class="view-all-link">Semua post →</a>
+  </section>
+
+  <!-- ── Featured Projects ─────────────────────────────── -->
+  <section class="content-section">
+    <SectionHead number="03" label="FEATURED PROJECTS" />
+    <div class="projects-grid">
+      {featuredProjects.map((proj, i) => (
+        <ProjectCard
+          title={proj.data.title}
+          description={proj.data.description}
+          slug={proj.slug}
+          stack={proj.data.stack}
+          status={proj.data.status}
+          liveUrl={proj.data.liveUrl}
+          repoUrl={proj.data.repoUrl}
+          index={i}
+        />
+      ))}
+    </div>
+    <a href="/projects" class="view-all-link">Semua project →</a>
+  </section>
+</BaseLayout>
+
+<style>
+/* ── Hero ────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-cyan-panel {
+  position: absolute; top: 0; right: -5%; bottom: 0;
+  width: 68%;
+  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-cyan-deep) 100%);
+  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0% 100%);
+  animation: sweepInRight var(--dur-enter) .05s var(--ease-out-cubic) both;
+}
+@keyframes sweepInRight {
+  from { transform: translateX(110%); }
+  to   { transform: translateX(0); }
+}
+
+.hero-dark {
+  position: relative; z-index: 2;
+  padding: 64px 0 64px 52px;
+  display: flex; flex-direction: column;
+  max-width: 480px;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs); letter-spacing: .18em;
+  color: var(--color-cyan); margin: 0 0 16px;
+}
+.hero-h1 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  line-height: .95; margin: 0 0 20px;
+  color: var(--color-white);
+}
+.h1-terces { color: var(--color-cyan); }
+
+.hero-sub {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-lg); color: var(--color-white);
+  margin: 0 0 10px; line-height: 1.4;
+}
+.hero-desc {
+  font-size: var(--text-base); color: rgba(255,255,255,.7);
+  margin: 0 0 28px; line-height: 1.6;
+}
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex; align-items: center;
+  padding: 12px 22px;
+  background: var(--color-white); color: var(--color-ink);
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  border-radius: var(--radius-sm); text-decoration: none;
+  position: relative; overflow: hidden;
+  transition: transform var(--dur-fast);
+}
+.btn-primary::after {
+  content: ""; position: absolute;
+  top: 0; left: -130%; width: 60%; height: 100%;
+  background: rgba(81,238,252,.6); transform: skewX(-18deg);
+  transition: left .4s ease;
+}
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-primary:hover::after { left: 140%; }
+.btn-primary span { position: relative; z-index: 1; }
+
+.btn-ghost {
+  display: inline-flex; align-items: center;
+  padding: 12px 22px;
+  border: 1px solid rgba(255,255,255,.3); color: var(--color-white);
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  border-radius: var(--radius-sm); text-decoration: none;
+  transition: border-color var(--dur-fast), background var(--dur-fast);
+}
+.btn-ghost:hover {
+  border-color: var(--color-cyan);
+  background: rgba(81,238,252,.08);
+}
+
+/* Focal geometric placeholder */
+.hero-focal {
+  position: absolute; right: 8%; bottom: 0; top: 0;
+  width: 220px;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3;
+  animation: fadeIn .6s .35s ease both;
+}
+.focal-geo { position: relative; width: 120px; height: 120px; }
+.geo-ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(81,238,252,.35);
+  animation: pulse 3s ease-in-out infinite;
+}
+.ring-1 { animation-delay: 0s; }
+.ring-2 { inset: 16px; border-color: rgba(81,238,252,.55); animation-delay: .6s; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: .7; }
+  50%       { transform: scale(1.06); opacity: 1; }
+}
+.geo-diamond {
+  position: absolute; inset: 32px;
+  background: rgba(81,238,252,.15);
+  border: 1.5px solid var(--color-cyan);
+  transform: rotate(45deg);
+  box-shadow: 0 0 20px rgba(81,238,252,.3);
+}
+
+/* ── Content sections ────────────────────────────────────── */
+.content-section {
+  padding: 56px 44px;
+  border-top: 1px solid rgba(176,200,232,.08);
+}
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.view-all-link {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted); text-decoration: none;
+  letter-spacing: .06em;
+  transition: color var(--dur-fast);
+}
+.view-all-link:hover { color: var(--color-cyan); }
+
+@media (max-width: 600px) {
+  .hero-dark { padding: 48px 20px 48px; }
+  .content-section { padding: 40px 20px; }
+  .posts-grid, .projects-grid { grid-template-columns: 1fr; }
+}
+</style>

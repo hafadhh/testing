@@ -1,0 +1,79 @@
+---
+import Tag from './Tag.astro';
+interface Props {
+  title: string;
+  description: string;
+  slug: string;
+  stack: string[];
+  status: string;
+  liveUrl?: string;
+  repoUrl?: string;
+  index?: number;
+}
+const { title, description, slug, stack, status, liveUrl, repoUrl, index = 0 } = Astro.props;
+
+const statusLabel: Record<string,string> = {
+  active: '● ACTIVE', wip: '◐ WIP', archived: '○ ARCHIVED'
+};
+---
+<article class="proj-card reveal-item" style={`animation-delay:${index * 80}ms`}>
+  <div class="proj-accent"></div>
+  <header class="proj-header">
+    <a href={`/projects/${slug}`} class="proj-title">{title}</a>
+    <span class={`proj-status status-${status}`}>{statusLabel[status]}</span>
+  </header>
+  <p class="proj-desc">{description}</p>
+  <div class="proj-stack">
+    {stack.map(s => <Tag label={s} />)}
+  </div>
+  <footer class="proj-links">
+    {liveUrl && <a href={liveUrl} target="_blank" rel="noopener" class="proj-link">↗ Live</a>}
+    {repoUrl && <a href={repoUrl} target="_blank" rel="noopener" class="proj-link">⌥ Repo</a>}
+    <a href={`/projects/${slug}`} class="proj-link">→ Detail</a>
+  </footer>
+</article>
+<style>
+.proj-card {
+  background: var(--color-navy);
+  border-radius: var(--radius-sm);
+  padding: 22px;
+  position: relative;
+  display: flex; flex-direction: column; gap: 12px;
+  opacity: 0; transform: translateY(16px);
+  transition: box-shadow .3s;
+}
+.proj-card.visible {
+  opacity: 1; transform: translateY(0);
+  transition: opacity .4s ease, transform .4s var(--ease-out-cubic), box-shadow .3s;
+}
+.proj-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,.35); transform: translateY(-4px); }
+.proj-accent {
+  position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+  background: var(--color-cyan);
+  transform: scaleY(0); transform-origin: top;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  transition: transform .3s var(--ease-out-cubic);
+}
+.proj-card:hover .proj-accent { transform: scaleY(1); }
+.proj-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.proj-title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--text-lg); color: var(--color-white);
+  text-decoration: none; line-height: 1.2;
+  transition: color var(--dur-fast);
+}
+.proj-title:hover { color: var(--color-cyan); }
+.proj-status { font-family: var(--font-mono); font-size: 9px; white-space: nowrap; padding-top: 4px; }
+.status-active   { color: #4ade80; }
+.status-wip      { color: var(--color-cyan); }
+.status-archived { color: var(--text-muted); }
+.proj-desc { font-size: var(--text-sm); color: var(--text-muted); line-height: 1.6; margin: 0; }
+.proj-stack { display: flex; gap: 6px; flex-wrap: wrap; }
+.proj-links { display: flex; gap: 14px; margin-top: auto; padding-top: 4px; }
+.proj-link {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); text-decoration: none; letter-spacing: .06em;
+  transition: color var(--dur-fast);
+}
+.proj-link:hover { color: var(--color-cyan); }
+</style>

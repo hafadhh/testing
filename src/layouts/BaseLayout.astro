@@ -1,0 +1,122 @@
+---
+import SideNav from '@components/nav/SideNav.astro';
+import TopBar from '@components/nav/TopBar.astro';
+import MiniPlayer from '@components/music/MiniPlayer.astro';
+import '@styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noIndex?: boolean;
+}
+
+import { SITE } from '@config/site';
+const {
+  title,
+  description = SITE.description,
+  ogImage,
+  noIndex = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+---
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noIndex && <meta name="robots" content="noindex,nofollow" />}
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url"         content={canonical} />
+  <meta property="og:type"        content="website" />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+
+  <!-- View Transitions (Astro native) -->
+  <meta name="astro-view-transitions" content="enabled" />
+</head>
+<body>
+  <SideNav />
+  <TopBar />
+  <MiniPlayer />
+
+  <div class="content-wrapper">
+    <main class="main-content" id="main">
+      <slot />
+    </main>
+  </div>
+
+  <!-- Scroll reveal script -->
+  <script>
+    function initReveal() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            const delay = (e.target as HTMLElement).style.animationDelay || `${i * 80}ms`;
+            setTimeout(() => {
+              e.target.classList.add('visible');
+            }, parseInt(delay));
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal-item').forEach(el => io.observe(el));
+    }
+    initReveal();
+    document.addEventListener('astro:page-load', initReveal);
+  </script>
+</body>
+</html>
+
+<style is:global>
+/* ════════════════════════════════════════════════════════════════
+   PAGE SHELL — per skeleton sketch:
+   - sidenav: floating rounded capsule, margin top/bottom/left
+   - content: separate rounded card, margin all sides, scrolls independently
+   ════════════════════════════════════════════════════════════════ */
+body {
+  min-height: 100vh;
+  background: var(--color-void);
+}
+
+.content-wrapper {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+  overflow: visible;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  padding-left: 110px;
+}
+
+.main-content {
+  width: 100%;
+  max-width: var(--content-max, 1040px);
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    left: var(--shell-gap, 22px);
+    top: calc(var(--shell-gap, 22px) + 52px);
+    bottom: calc(var(--shell-gap, 22px) + 64px); /* room for mobile mini-player */
+  }
+}
+</style>
