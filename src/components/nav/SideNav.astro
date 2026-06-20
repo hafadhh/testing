@@ -5,13 +5,10 @@ const { pathname } = Astro.url;
 
 <nav class="sidenav" id="sidenav" aria-label="Main navigation">
   <!-- Brand (visible only when expanded) -->
-  <a href="/" class="nav-brand">
-    <span class="brand-text">TER<span class="brand-accent">CES</span></span>
-    <span class="brand-dot" aria-hidden="true">.</span>
-  </a>
+  
 
   <!-- Collapsed-state rail icon (visible only when collapsed) -->
-  <div class="rail-mark" aria-hidden="true">T<span class="rail-dot">.</span></div>
+  
 
   <!-- Tab list -->
   <div class="tab-list" id="tabList" role="list">
@@ -204,33 +201,42 @@ const { pathname } = Astro.url;
 
 /* Ghost big number — Anton, matching reference image style */
 .tab-ghost {
-  opacity: 1;
-  transform: translateY(-50%);
   position: absolute;
-  right: 12px; top: 50%;
-  font-family: var(--font-ghost);
-  font-weight: 400;
-  font-size: 73px;
-
-  letter-spacing: -.01em;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.92);
+  
+  font-family: var(--font-ghost); /* pakai font kamu */
+  font-weight: 800;
+  font-size: 88px;
   line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 2px rgba(0,16,32,0);
-  z-index: 3;
-  pointer-events: none;
-  transition: opacity .22s linear,
-              transform .3s var(--ease-out-cubic),
-              -webkit-text-stroke-color .2s linear,
-              color .2s linear;
+  letter-spacing: -.01em;
   white-space: nowrap;
+
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(81, 238, 252,.07);
+
+  pointer-events: none;
+  user-select: none;
+  opacity: .85;
+  z-index: 3;
+
+  transition:
+    transform .3s var(--ease-out-cubic),
+    opacity .22s linear,
+    color .2s linear,
+    -webkit-text-stroke-color .2s linear;
 }
+
 .nav-tab:hover .tab-ghost,
 .nav-tab.active .tab-ghost {
   opacity: 1;
-  transform: translateY(-50%) scale(1);
-  color: var(--color-red);
+  right: 7px;
+  transform: translateY(-50%) rotate(-8deg) scale(1);
+  color: var(--color-red); /* fill muncul */
   -webkit-text-stroke: 2px var(--color-ink);
 }
+
 
 /* Content (small idx + label) */
 .tab-content {
