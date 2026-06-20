@@ -144,7 +144,8 @@ const featuredProjects = await getFeaturedProjects();
 .btn-primary {
   display: inline-flex; align-items: center;
   padding: 12px 22px;
-  background: var(--color-white); color: var(--color-ink);
+  background: #1269cc; 
+  color: #ffffff;
   font-family: var(--font-body); font-weight: 600; font-size: 13px;
   border-radius: var(--radius-sm); text-decoration: none;
   position: relative; overflow: hidden;
@@ -153,10 +154,14 @@ const featuredProjects = await getFeaturedProjects();
 .btn-primary::after {
   content: ""; position: absolute;
   top: 0; left: -130%; width: 60%; height: 100%;
-  background: rgba(81,238,252,.6); transform: skewX(-18deg);
+  background: rgba(81,238,252,.6);  transform: skewX(-18deg); 
   transition: left .4s ease;
 }
-.btn-primary:hover { transform: translateY(-2px); }
+.btn-primary:hover { 
+  transform: translateY(-2px); 
+  background: var(--color-white); 
+  color: #001020; 
+}
 .btn-primary:hover::after { left: 140%; }
 .btn-primary span { position: relative; z-index: 1; }
 

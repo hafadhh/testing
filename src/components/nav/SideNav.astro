@@ -206,15 +206,15 @@ const { pathname } = Astro.url;
   top: 50%;
   transform: translateY(-50%) scale(0.92);
   
-  font-family: var(--font-ghost); /* pakai font kamu */
-  font-weight: 800;
+  font-family: var(--font-ghost);
+  font-weight: 80;
   font-size: 88px;
   line-height: 1;
   letter-spacing: -.01em;
   white-space: nowrap;
 
   color: transparent;
-  -webkit-text-stroke: 1px rgba(81, 238, 252,.07);
+  -webkit-text-stroke: 2px rgba(81, 238, 252,.36);
 
   pointer-events: none;
   user-select: none;
@@ -231,10 +231,11 @@ const { pathname } = Astro.url;
 .nav-tab:hover .tab-ghost,
 .nav-tab.active .tab-ghost {
   opacity: 1;
-  right: 7px;
+  right: 6px;
   transform: translateY(-50%) rotate(-8deg) scale(1);
   color: var(--color-red); /* fill muncul */
-  -webkit-text-stroke: 2px var(--color-ink);
+    -webkit-text-stroke: 0px
+
 }
 
 
