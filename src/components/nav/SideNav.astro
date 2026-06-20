@@ -64,8 +64,10 @@ const { pathname } = Astro.url;
 .sidenav {
   padding: 0;
   border-radius: 8px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 50% !important;
+  transform: translateY(-50%) 
+  outline: 3px solid red !important;
+  
   bottom: auto; /* leave room for floating music capsule below */
   min-height: auto;
   height: fit-content;
@@ -104,23 +106,7 @@ const { pathname } = Astro.url;
 }
 
 /* ── Brand ──────────────────────────────────────────── */
-#.nav-brand {
-#   font-family: var(--font-display);
-#   font-weight: 800;
-#   font-size: 16px;
-#   letter-spacing: .03em;
-#   padding: 0 0 20px 22px;
-#   display: block;
-#   line-height: 1;
-#   white-space: nowrap;
-#   opacity: 0;
-#   transform: translateX(-6px);
-#   transition: opacity .22s ease .08s, transform .22s ease .08s;
-# }
-# .sidenav:hover .nav-brand,
-# .sidenav.pinned-open .nav-brand { opacity: 1; transform: translateX(0); }
-# .brand-accent { color: var(--color-cyan); }
-# .brand-dot    { color: var(--color-red); }
+
 
 /* Collapsed rail mark */
 .rail-mark {

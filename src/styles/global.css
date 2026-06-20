@@ -141,10 +141,10 @@ ul, ol { list-style: none; }
   from { transform: translateX(110%); }
   to   { transform: translateX(0); }
 }
-@keyframes navIn {
+/* @keyframes navIn {
   from { opacity: 0; transform: translateX(-20px); }
   to   { opacity: 1; transform: translateX(0); }
-}
+} */
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
