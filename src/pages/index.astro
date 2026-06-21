@@ -4,6 +4,7 @@ import PostCard from '@components/ui/PostCard.astro';
 import ProjectCard from '@components/ui/ProjectCard.astro';
 import SectionHead from '@components/ui/SectionHead.astro';
 import { getRecentPosts, getFeaturedProjects } from '@utils/content';
+import IntroOverlay from '@components/motion/IntroOverlay.astro';
 
 const recentPosts     = await getRecentPosts(4);
 const featuredProjects = await getFeaturedProjects();
@@ -11,6 +12,7 @@ const featuredProjects = await getFeaturedProjects();
 
 <BaseLayout>
   <!-- ── Hero ─────────────────────────────────────────── -->
+  <IntroOverlay />
   <section class="hero">
     <div class="hero-cyan-panel" aria-hidden="true"></div>
 
