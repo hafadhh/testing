@@ -1,228 +1,174 @@
-<!doctype html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Intro Preview — TERCES</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@800;900&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --color-cyan: #51eefc;
-      --color-cyan-deep: #1269cc;
-      --color-navy: #00183e;
-      --color-white: #ffffff;
-      --font-display: 'Unbounded', sans-serif;
-      --font-mono: 'IBM Plex Mono', monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: var(--color-navy);
-      min-height: 100vh;
-      font-family: var(--font-mono);
-      overflow: hidden;
-    }
-
-    .page-behind {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      color: var(--color-cyan);
-      font-size: 14px;
-      letter-spacing: .1em;
-    }
-
-    .replay-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 10000;
-      background: var(--color-cyan);
-      color: var(--color-navy);
-      border: none;
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-weight: 600;
-      font-size: 12px;
-      cursor: pointer;
-      letter-spacing: .05em;
-    }
-
-    /* =========================================================
-       INTRO OVERLAY
-       ========================================================= */
-    .intro-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .intro-overlay.intro-done {
-      display: none;
-    }
-
-    .intro-backdrop {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, var(--color-cyan) 0%, var(--color-cyan-deep) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .intro-title-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 24px;
-    }
-
-    .intro-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: .22em;
-      color: var(--color-navy);
-      margin-bottom: 14px;
-    }
-
-    .intro-title {
-      font-family: var(--font-display);
-      font-weight: 900;
-      font-size: clamp(2.4rem, 8vw, 5rem);
-      line-height: .95;
-      margin: 0;
-      color: var(--color-white);
-    }
-
-    .intro-title-line {
-      display: block;
-    }
-
-    .intro-title-accent {
-      color: var(--color-navy);
-    }
-
-    .intro-curtain {
-      position: absolute;
-      inset: 0;
-      background: #ffffff;
-      transform: translateY(0);
-      will-change: transform;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="page-behind">// homepage content sits here, behind the intro</div>
-
-  <button class="replay-btn" id="replayBtn">↻ REPLAY INTRO</button>
-
-  <!-- INTRO OVERLAY -->
-  <div class="intro-overlay" id="introOverlay" aria-hidden="true">
-    <!-- Backdrop -->
-    <div class="intro-backdrop">
-      <div class="intro-title-wrap">
-        <span class="intro-eyebrow">PERSONAL BUILD LOG</span>
-        <h1 class="intro-title">
-          <span class="intro-title-line">PERSONA</span>
-          <span class="intro-title-line intro-title-accent">TERCES</span>
-        </h1>
-      </div>
+<div class="intro-overlay" id="introOverlay" aria-hidden="true">
+  <div class="intro-backdrop">
+    <div class="intro-title-wrap">
+      <span class="intro-eyebrow">PERSONAL BUILD LOG</span>
+      <h1 class="intro-title">
+        <span class="intro-title-line">PERSONA</span>
+        <span class="intro-title-line intro-title-accent">TERCES</span>
+      </h1>
     </div>
-
-    <!-- White curtain -->
-    <div class="intro-curtain" id="introCurtain"></div>
   </div>
 
-  <script>
-  const overlay   = document.getElementById('introOverlay');
-  const curtain   = document.getElementById('introCurtain');
-  const replayBtn = document.getElementById('replayBtn');
+  <div class="intro-curtain" id="introCurtain"></div>
+</div>
 
-  // ================================
-  // TIMING
-  // ================================
-  const WHITE_HOLD        = 1200;
-  const FALL_DURATION     = 2100; // total jatuh curtain
-  const HOLD_AFTER_REVEAL = 400;
-  const EXIT_DURATION     = 600;
-
-  let rafId = null;
-
-  function resetState() {
-    if (rafId) cancelAnimationFrame(rafId);
-
-    overlay.classList.remove('intro-done');
-    overlay.style.transition = 'none';
-    overlay.style.opacity = '1';
-    overlay.style.pointerEvents = 'auto';
-
-    curtain.style.transition = 'none';
-    curtain.style.transform = 'translateY(0)';
-
-    void overlay.offsetHeight;
+<style>
+  .intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    overflow: hidden;
+    pointer-events: none;
   }
 
-  function runIntro() {
-    setTimeout(dropCurtain, WHITE_HOLD);
+  .intro-overlay.intro-done {
+    display: none;
   }
 
-  // Easing yang hanya melambat ke akhir, tanpa "naik lagi"
-  // Kurva ini cepat di awal lalu terus turun kecepatannya sampai selesai.
-  function easeOutQuint(t) {
-    return 1 - Math.pow(1 - t, 5);
+  .intro-backdrop {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--color-cyan) 0%, var(--color-cyan-deep) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  function dropCurtain() {
-    const start = performance.now();
+  .intro-title-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+  }
 
-    function animate(now) {
-      const elapsed = now - start;
-      const t = Math.min(elapsed / FALL_DURATION, 1);
+  .intro-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--color-navy);
+    margin-bottom: 14px;
+  }
 
-      // progress bergerak cepat di awal lalu terus melambat
-      const eased = easeOutQuint(t);
+  .intro-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2.4rem, 8vw, 5rem);
+    line-height: 0.95;
+    margin: 0;
+    color: var(--color-white);
+  }
 
-      curtain.style.transform = `translateY(${eased * 100}%)`;
+  .intro-title-line {
+    display: block;
+  }
 
-      if (t < 1) {
-        rafId = requestAnimationFrame(animate);
-      } else {
-        rafId = null;
-        setTimeout(finishIntro, HOLD_AFTER_REVEAL);
-      }
+  .intro-title-accent {
+    color: var(--color-navy);
+  }
+
+  .intro-curtain {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    transform: translateY(0);
+    will-change: transform;
+  }
+
+  /* class ini dipasang ke body via JS selama intro berjalan */
+  :global(body.intro-lock) {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  const overlay = document.getElementById('introOverlay');
+  const curtain = document.getElementById('introCurtain');
+
+  if (overlay && curtain) {
+    const WHITE_HOLD = 1200;
+    const FALL_DURATION = 2100;
+    const HOLD_AFTER_REVEAL = 400;
+    const EXIT_DURATION = 600;
+
+    let rafId = null;
+    let holdTimer = null;
+    let revealTimer = null;
+    let exitTimer = null;
+
+    function lockScroll() {
+      document.body.classList.add('intro-lock');
     }
 
-    rafId = requestAnimationFrame(animate);
+    function unlockScroll() {
+      document.body.classList.remove('intro-lock');
+    }
+
+    function easeOutQuint(t) {
+      return 1 - Math.pow(1 - t, 5);
+    }
+
+    function cleanupTimers() {
+      if (rafId) cancelAnimationFrame(rafId);
+      if (holdTimer) clearTimeout(holdTimer);
+      if (revealTimer) clearTimeout(revealTimer);
+      if (exitTimer) clearTimeout(exitTimer);
+      rafId = null;
+      holdTimer = null;
+      revealTimer = null;
+      exitTimer = null;
+    }
+
+    function finishIntro() {
+      overlay.style.transition = `opacity ${EXIT_DURATION}ms ease`;
+      overlay.style.opacity = '0';
+
+      exitTimer = setTimeout(() => {
+        overlay.classList.add('intro-done');
+        unlockScroll();
+      }, EXIT_DURATION);
+    }
+
+    function dropCurtain() {
+      const start = performance.now();
+
+      function animate(now) {
+        const elapsed = now - start;
+        const t = Math.min(elapsed / FALL_DURATION, 1);
+        const eased = easeOutQuint(t);
+
+        curtain.style.transform = `translateY(${eased * 100}%)`;
+
+        if (t < 1) {
+          rafId = requestAnimationFrame(animate);
+        } else {
+          rafId = null;
+          revealTimer = setTimeout(finishIntro, HOLD_AFTER_REVEAL);
+        }
+      }
+
+      rafId = requestAnimationFrame(animate);
+    }
+
+    function runIntro() {
+      lockScroll();
+      overlay.classList.remove('intro-done');
+      overlay.style.opacity = '1';
+      overlay.style.transition = 'none';
+      curtain.style.transform = 'translateY(0)';
+
+      // force reflow
+      void overlay.offsetHeight;
+
+      holdTimer = setTimeout(dropCurtain, WHITE_HOLD);
+    }
+
+    runIntro();
+
+    // optional: expose replay untuk debug dari console
+    window.replayIntro = () => {
+      cleanupTimers();
+      runIntro();
+    };
   }
-
-  function finishIntro() {
-    overlay.style.transition = `opacity ${EXIT_DURATION}ms ease`;
-    overlay.style.opacity = '0';
-
-    setTimeout(() => {
-      overlay.classList.add('intro-done');
-    }, EXIT_DURATION);
-  }
-
-  runIntro();
-
-  replayBtn.addEventListener('click', () => {
-    resetState();
-    requestAnimationFrame(() => runIntro());
-  });
 </script>
-</body>
-</html>
