@@ -1,0 +1,282 @@
+---
+/**
+ * TakeoverOverlay — full-screen "takeover view", P3R-style.
+ *
+ * Not a modal (no dimmed backdrop, no centered card) and not a page
+ * navigation — it's a full-viewport layer that slides in over the
+ * current page and is dismissed with an explicit back button.
+ *
+ * Reference: asia.sega.com/p3r — Featured/Game System/Character info
+ * panels.
+ *
+ * Opening sequence:
+ *  1. Four horizontal bars (dark→light blue) slide in from the right,
+ *     staggered top-to-bottom (top bar leads, each next bar trails
+ *     slightly), fully covering the viewport — "staircase" sweep.
+ *  2. Once the bars fully cover the screen, the content panel slides
+ *     in from the right and settles with a left gutter reserved for
+ *     the bars (visible as a decorative striped edge).
+ *  3. Content scrolls independently if it overflows.
+ *
+ * Closing sequence (exact reverse):
+ *  1. Content panel slides back out to the right.
+ *  2. The four bars retreat off-screen to the right, staggered the
+ *     same way (top bar leads again).
+ *  3. Underlying page is revealed, scroll restored.
+ *
+ * Usage:
+ *   <TakeoverOverlay id="character-info" title="About">
+ *     <p>...content...</p>
+ *   </TakeoverOverlay>
+ *
+ *   <button data-takeover-open="character-info">Open</button>
+ */
+interface Props {
+  /** Unique id — used to wire up open triggers via data-takeover-open="<id>" */
+  id: string;
+  /** Optional heading shown at the top of the content panel */
+  title?: string;
+}
+const { id, title } = Astro.props;
+---
+
+<div class="takeover" id={`takeover-${id}`} data-takeover aria-hidden="true">
+  <!-- Four staggered bars — top to bottom, dark → light -->
+  <div class="takeover-bars" aria-hidden="true">
+    <div class="tk-bar tk-bar-1"></div>
+    <div class="tk-bar tk-bar-2"></div>
+    <div class="tk-bar tk-bar-3"></div>
+    <div class="tk-bar tk-bar-4"></div>
+  </div>
+
+  <!-- Content panel — slides in after the bars, leaves a left gutter -->
+  <div class="takeover-panel" role="dialog" aria-modal="true" aria-label={title ?? 'Overlay'}>
+    <header class="takeover-header">
+      <button class="takeover-back" data-takeover-close type="button" aria-label="Kembali">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <polyline points="11,6 5,12 11,18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Kembali</span>
+      </button>
+      {title && <h2 class="takeover-title">{title}</h2>}
+    </header>
+
+    <div class="takeover-scroll">
+      <div class="takeover-content">
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ════════════════════════════════════════════════════════════════
+   SHELL — fixed, full viewport, hidden until opened.
+   No dim backdrop: the bars themselves ARE the transition surface,
+   matching the P3R reference (no modal-style scrim).
+   ════════════════════════════════════════════════════════════════ */
+.takeover {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  visibility: hidden;
+  pointer-events: none;
+}
+.takeover.is-open {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* ── Bars layer ─────────────────────────────────────────────────── */
+.takeover-bars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+.tk-bar {
+  flex: 1 1 25%;
+  transform: translateX(100%);
+  will-change: transform;
+}
+.tk-bar-1 { background: var(--color-navy-2, #072860); }
+.tk-bar-2 { background: var(--color-cyan-deep, #1269cc); }
+.tk-bar-3 { background: var(--color-cyan-deep, #1269cc); }
+.tk-bar-4 { background: var(--color-cyan, #51eefc); }
+
+/* ── Content panel ──────────────────────────────────────────────── */
+.takeover-panel {
+  position: absolute;
+  inset: 0;
+  /* Gutter reserved on the left for the bars, visible behind the panel */
+  left: var(--takeover-gutter, 84px);
+  background: var(--color-void, #001736);
+  transform: translateX(100%);
+  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0,0,0,.35);
+}
+
+.takeover-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 32px;
+  border-bottom: 1px solid rgba(81,238,252,.1);
+}
+.takeover-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-cyan, #51eefc);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: .06em;
+  background: rgba(81,238,252,.08);
+  border: 1px solid rgba(81,238,252,.25);
+  border-radius: 999px;
+  padding: 8px 16px 8px 10px;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.takeover-back:hover {
+  background: rgba(81,238,252,.16);
+  border-color: rgba(81,238,252,.5);
+  transform: translateX(-3px);
+}
+.takeover-back svg { width: 16px; height: 16px; }
+
+.takeover-title {
+  font-family: var(--font-display, sans-serif);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-white, #fff);
+  margin: 0;
+}
+
+/* ── Scrollable content area ───────────────────────────────────── */
+.takeover-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.takeover-content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 32px 64px;
+  color: var(--text-muted, #b0c8e8);
+}
+
+@media (max-width: 640px) {
+  .takeover-panel { left: 44px; }
+  .takeover-header { padding: 18px 20px; }
+  .takeover-content { padding: 28px 20px 48px; }
+}
+</style>
+
+<script define:vars={{ id }}>
+(function () {
+  const root = document.getElementById(`takeover-${id}`);
+  if (!root) return;
+
+  const bars  = root.querySelectorAll('.tk-bar');
+  const panel = root.querySelector('.takeover-panel');
+
+  // ── Timing plan ──────────────────────────────────────────────
+  const BAR_STAGGER   = 70;   // ms between each bar's start
+  const BAR_DURATION  = 420;  // ms each bar takes to slide
+  const BAR_EASE      = 'cubic-bezier(.22,.61,.36,1)';
+  const PANEL_DELAY_AFTER_BARS = 90; // small beat after bars finish
+  const PANEL_DURATION = 480;
+  const PANEL_EASE = 'cubic-bezier(.22,.61,.36,1)';
+
+  let isOpen = false;
+  let previousFocus = null;
+
+  function open() {
+    if (isOpen) return;
+    isOpen = true;
+    previousFocus = document.activeElement;
+
+    root.classList.add('is-open');
+    root.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+
+    // Reset to closed visual state first (in case of re-open)
+    bars.forEach(b => { b.style.transition = 'none'; b.style.transform = 'translateX(100%)'; });
+    panel.style.transition = 'none';
+    panel.style.transform = 'translateX(100%)';
+    void root.offsetHeight; // reflow
+
+    // 1. Bars slide in, staggered top → bottom
+    bars.forEach((bar, i) => {
+      bar.style.transition = `transform ${BAR_DURATION}ms ${BAR_EASE}`;
+      bar.style.transitionDelay = `${i * BAR_STAGGER}ms`;
+    });
+    requestAnimationFrame(() => {
+      bars.forEach(bar => { bar.style.transform = 'translateX(0)'; });
+    });
+
+    const barsTotalTime = (bars.length - 1) * BAR_STAGGER + BAR_DURATION;
+
+    // 2. Content panel slides in after bars finish
+    setTimeout(() => {
+      panel.style.transition = `transform ${PANEL_DURATION}ms ${PANEL_EASE}`;
+      void panel.offsetHeight;
+      panel.style.transform = 'translateX(0)';
+    }, barsTotalTime + PANEL_DELAY_AFTER_BARS);
+
+    // Focus management
+    setTimeout(() => {
+      const closeBtn = root.querySelector('[data-takeover-close]');
+      closeBtn && closeBtn.focus();
+    }, barsTotalTime + PANEL_DELAY_AFTER_BARS + PANEL_DURATION);
+  }
+
+  function close() {
+    if (!isOpen) return;
+    isOpen = false;
+
+    // 1. Content panel slides back out first
+    panel.style.transition = `transform ${PANEL_DURATION}ms ${PANEL_EASE}`;
+    panel.style.transform = 'translateX(100%)';
+
+    // 2. Bars retreat, same stagger order (top leads)
+    setTimeout(() => {
+      bars.forEach((bar, i) => {
+        bar.style.transition = `transform ${BAR_DURATION}ms ${BAR_EASE}`;
+        bar.style.transitionDelay = `${i * BAR_STAGGER}ms`;
+        bar.style.transform = 'translateX(100%)';
+      });
+
+      const barsTotalTime = (bars.length - 1) * BAR_STAGGER + BAR_DURATION;
+      setTimeout(() => {
+        root.classList.remove('is-open');
+        root.setAttribute('aria-hidden', 'true');
+        document.documentElement.style.overflow = '';
+        if (previousFocus && previousFocus.focus) previousFocus.focus();
+      }, barsTotalTime);
+    }, PANEL_DURATION * 0.5); // bars start retreating slightly before panel fully exits
+  }
+
+  // ── Wire up triggers ────────────────────────────────────────────
+  document.querySelectorAll(`[data-takeover-open="${id}"]`).forEach(btn => {
+    btn.addEventListener('click', open);
+  });
+  root.querySelectorAll('[data-takeover-close]').forEach(btn => {
+    btn.addEventListener('click', close);
+  });
+
+  // Escape key closes
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) close();
+  });
+
+  // Expose for programmatic control if needed
+  root._takeoverOpen = open;
+  root._takeoverClose = close;
+})();
+</script>

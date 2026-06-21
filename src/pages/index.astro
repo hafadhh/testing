@@ -5,6 +5,7 @@ import ProjectCard from '@components/ui/ProjectCard.astro';
 import SectionHead from '@components/ui/SectionHead.astro';
 import { getRecentPosts, getFeaturedProjects } from '@utils/content';
 import IntroOverlay from '@components/motion/IntroOverlay.astro';
+import TakeoverOverlay from '@components/motion/TakeoverOverlay.astro';
 
 const recentPosts     = await getRecentPosts(4);
 const featuredProjects = await getFeaturedProjects();
@@ -39,6 +40,9 @@ const featuredProjects = await getFeaturedProjects();
         <a href="/about" class="btn-ghost">
           <span>Tentang Saya</span>
         </a>
+        <button type="button" class="btn-ghost" data-takeover-open="profile">
+          <span>Profil Lengkap ↗</span>
+        </button>
       </div>
     </div>
 
@@ -89,6 +93,36 @@ const featuredProjects = await getFeaturedProjects();
     </div>
     <a href="/projects" class="view-all-link">Semua project →</a>
   </section>
+  <TakeoverOverlay id="profile" title="Profil Lengkap">
+    <h3 class="profile-name">Terces</h3>
+    <p class="profile-tagline">Developer. Pelajar yang lambat. Persona fan yang terlalu serius.</p>
+ 
+    <p>
+      Saya bikin website ini bukan karena punya sesuatu yang luar biasa untuk
+      diceritakan, tapi karena saya percaya dokumentasi itu penting — termasuk
+      untuk diri sendiri. Sebagian besar waktu saya dihabiskan di antara
+      terminal, editor, dan earphone yang sedang memutar OST Persona.
+    </p>
+ 
+    <h4>Fokus saat ini</h4>
+    <ul>
+      <li>Astro + TypeScript untuk proyek personal</li>
+      <li>Belajar Go untuk backend side project</li>
+      <li>Deep-dive ke animasi CSS dan motion design</li>
+    </ul>
+ 
+    <h4>Di luar coding</h4>
+    <p>
+      JRPG adalah genre favorit — Persona series khususnya. Musik soundtrack
+      game adalah kategori yang serius dan underrated buat saya: Shoji Meguro,
+      Yoko Shimomura, Nobuo Uematsu hampir selalu menemani saat kerja.
+    </p>
+ 
+    <p>
+      Halaman <a href="/about">About</a> punya cerita yang lebih lengkap kalau
+      kamu mau baca lebih jauh.
+    </p>
+  </TakeoverOverlay>
 </BaseLayout>
 
 <style>
